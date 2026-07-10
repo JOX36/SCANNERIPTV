@@ -19,6 +19,7 @@ fun MainScreen(
 ) {
     val progress by viewModel.progress.collectAsState()
     val logText by viewModel.logText.collectAsState()
+    val isScanning by viewModel.isScanning.collectAsState()
 
     Column(
         modifier = Modifier
@@ -26,7 +27,7 @@ fun MainScreen(
             .padding(16.dp)
     ) {
         Text(
-            text = "🌌 IPTV SUPER SCANNER v4.5 (Kotlin)",
+            text = "🌌 IPTV SUPER SCANNER v4.5",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF00FFCC)
@@ -39,7 +40,7 @@ fun MainScreen(
             modifier = Modifier.fillMaxWidth(),
             color = Color(0xFF00FFCC)
         )
-        Text("${progress.toInt()}%", color = Color.White)
+        Text(text = "${progress.toInt()}%", color = Color.White)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -63,9 +64,14 @@ fun MainScreen(
         Button(
             onClick = { viewModel.startRealScan() },
             modifier = Modifier.fillMaxWidth(),
+            enabled = !isScanning,
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00FFCC))
         ) {
-            Text("🌍 ESCANEAR + VALIDAR (REAL)", color = Color.Black, fontWeight = FontWeight.Bold)
+            Text(
+                if (isScanning) "Escaneando..." else "🌍 ESCANEAR + VALIDAR (REAL)",
+                color = Color.Black,
+                fontWeight = FontWeight.Bold
+            )
         }
 
         Button(
@@ -73,7 +79,7 @@ fun MainScreen(
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00FF88))
         ) {
-            Text("📤 ENVIAR A TELEGRAM", color = Color.Black)
+            Text("📤 ENVIAR RESULTADOS A TELEGRAM", color = Color.Black)
         }
 
         OutlinedButton(
