@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -23,7 +23,7 @@ jobs:
           pip install --upgrade pip
           pip install buildozer cython
 
-      - name: Cache Buildozer & Android SDK
+      - name: Cache Buildozer
         uses: actions/cache@v4
         with:
           path: |
@@ -42,7 +42,7 @@ jobs:
         env:
           JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
         run: |
-          yes | buildozer android debug || true
+          buildozer android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
