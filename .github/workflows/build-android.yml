@@ -7,45 +7,15 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    container:
+      image: kivy/buildozer:latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Buildozer
-        run: |
-          pip install --upgrade pip
-          pip install buildozer cython
-
-      - name: Cache Buildozer
-        uses: actions/cache@v4
-        with:
-          path: |
-            \~/.buildozer
-            ./.buildozer
-          key: \( {{ runner.os }}-buildozer- \){{ hashFiles('buildozer.spec') }}
-          restore-keys: |
-            ${{ runner.os }}-buildozer-
-
-      - name: Install Java 17
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y openjdk-17-jdk-headless
-
-      - name: Accept SDK Licenses
-        run: |
-          yes | sdkmanager --licenses || true
-          yes | sdkmanager "platforms;android-31" || true
-
-      - name: Build APK
-        env:
-          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+      - name: Build APK with Buildozer
         run: |
           buildozer android debug
 
