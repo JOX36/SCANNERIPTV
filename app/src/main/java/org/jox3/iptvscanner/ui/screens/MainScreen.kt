@@ -10,46 +10,39 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.jox3.iptvscanner.MainViewModel
 
 @Composable
-fun MainScreen(onNavigateToSettings: () -> Unit) {
-    var progress by remember { mutableStateOf(0f) }
-    var logText by remember { mutableStateOf("Listo para escanear...\n") }
-    var statusText by remember { mutableStateOf("✅ Credenciales cargadas") }
+fun MainScreen(
+    viewModel: MainViewModel,
+    onNavigateToSettings: () -> Unit
+) {
+    val progress by viewModel.progress.collectAsState()
+    val logText by viewModel.logText.collectAsState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Header
         Text(
-            text = "🌌 IPTV SUPER SCANNER v4.5",
-            fontSize = 22.sp,
+            text = "🌌 IPTV SUPER SCANNER v4.5 (Kotlin)",
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF00FFCC),
-            modifier = Modifier.padding(bottom = 16.dp)
+            color = Color(0xFF00FFCC)
         )
 
-        Text(text = statusText, color = Color(0xFF00FFCC))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Progress Bar
         LinearProgressIndicator(
-            progress = { progress / 100f },
+            progress = { progress / 100 },
             modifier = Modifier.fillMaxWidth(),
             color = Color(0xFF00FFCC)
         )
-        Text(
-            text = "Progreso: ${progress.toInt()}%",
-            color = Color.White,
-            modifier = Modifier.padding(top = 4.dp)
-        )
+        Text("${progress.toInt()}%", color = Color.White)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Log
         Card(
             modifier = Modifier
                 .weight(1f)
@@ -61,22 +54,14 @@ fun MainScreen(onNavigateToSettings: () -> Unit) {
                     .verticalScroll(rememberScrollState())
                     .padding(12.dp)
             ) {
-                Text(
-                    text = logText,
-                    color = Color.White,
-                    fontSize = 13.sp
-                )
+                Text(logText, color = Color.White, fontSize = 13.sp)
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        // Buttons
         Button(
-            onClick = {
-                logText += "🚀 Iniciando escaneo REAL...\n"
-                // Aquí irá la lógica real más adelante
-            },
+            onClick = { viewModel.startRealScan() },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00FFCC))
         ) {
@@ -84,11 +69,11 @@ fun MainScreen(onNavigateToSettings: () -> Unit) {
         }
 
         Button(
-            onClick = { /* Enviar a Telegram */ },
+            onClick = { viewModel.sendResultsToTelegram() },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00FF88))
         ) {
-            Text("📤 ENVIAR RESULTADOS A TELEGRAM", color = Color.Black)
+            Text("📤 ENVIAR A TELEGRAM", color = Color.Black)
         }
 
         OutlinedButton(
