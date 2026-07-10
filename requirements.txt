@@ -1,4 +1,0 @@
-kivy
-aiohttp
-python-dotenv
-telethon
