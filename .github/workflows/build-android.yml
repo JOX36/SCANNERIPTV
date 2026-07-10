@@ -30,11 +30,18 @@ jobs:
             \~/.buildozer
             ./.buildozer
           key: \( {{ runner.os }}-buildozer- \){{ hashFiles('buildozer.spec') }}
+          restore-keys: |
+            ${{ runner.os }}-buildozer-
 
       - name: Install Java 17
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y openjdk-17-jdk-headless
+
+      - name: Accept SDK Licenses
+        run: |
+          yes | sdkmanager --licenses || true
+          yes | sdkmanager "platforms;android-31" || true
 
       - name: Build APK
         env:
