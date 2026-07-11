@@ -5,12 +5,12 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.jox3.iptvscanner.data.TelegramRepository
+import org.jox3.iptvscanner.data.TDLibManager
 import org.jox3.iptvscanner.data.models.IptvResult
 
 class MainViewModel : ViewModel() {
 
-    private val repository = TelegramRepository()
+    private val tdLibManager = TDLibManager()
 
     private val _progress = MutableStateFlow(0f)
     val progress: StateFlow<Float> = _progress
@@ -20,6 +20,12 @@ class MainViewModel : ViewModel() {
 
     private val _results = MutableStateFlow<List<IptvResult>>(emptyList())
     val results: StateFlow<List<IptvResult>> = _results
+
+    val authState = tdLibManager.authState
+
+    init {
+        tdLibManager.initialize()
+    }
 
     fun addLog(message: String) {
         _logText.value += "$message\n"
@@ -31,25 +37,32 @@ class MainViewModel : ViewModel() {
 
     fun startRealScan() {
         viewModelScope.launch {
-            addLog("🚀 Iniciando escaneo REAL con Telegram...")
-            
-            // Ejemplo de flujo (pendiente de implementar)
-            // val urls = repository.scanChatForM3u(selectedChatId)
-            // urls.forEachIndexed { index, url ->
-            //     val result = repository.validateM3u(url)
-            //     if (result != null) _results.value += result
-            //     updateProgress((index + 1f) / urls.size * 100)
-            // }
-            
-            addLog("✅ Escaneo completado (pendiente de implementación real)")
+            addLog("🚀 Iniciando escaneo REAL con TDLib...")
+
+            if (!tdLibManager.isLoggedIn()) {
+                addLog("❌ No estás logueado en Telegram")
+                return@launch
+            }
+
+            // Aquí irá la lógica de escaneo real
+            addLog("✅ Escaneo iniciado (pendiente de completar)")
         }
     }
 
     fun sendResultsToTelegram() {
+        addLog("📤 Enviando resultados a Telegram...")
+    }
+
+    // Funciones de login (las usaremos más adelante)
+    fun sendPhoneNumber(phone: String) {
         viewModelScope.launch {
-            addLog("📤 Enviando resultados a Telegram...")
-            // repository.sendResultsToBot(_results.value, botToken, chatId)
-            addLog("✅ Resultados enviados (pendiente de implementación)")
+            tdLibManager.sendPhoneNumber(phone)
+        }
+    }
+
+    fun sendCode(code: String) {
+        viewModelScope.launch {
+            tdLibManager.sendCode(code)
         }
     }
 }
