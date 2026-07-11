@@ -18,10 +18,12 @@ import org.jox3.iptvscanner.ui.theme.IPTVScannerTheme
 
 class MainActivity : ComponentActivity() {
 
+    // ViewModel compartido entre todas las pantallas
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             IPTVScannerTheme {
                 Surface(
@@ -30,7 +32,11 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
 
-                    NavHost(navController = navController, startDestination = "login") {
+                    NavHost(
+                        navController = navController,
+                        startDestination = "login"
+                    ) {
+                        // Pantalla de Login
                         composable("login") {
                             LoginScreen(
                                 viewModel = viewModel,
@@ -41,14 +47,25 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
+
+                        // Pantalla Principal
                         composable("main") {
                             MainScreen(
                                 viewModel = viewModel,
-                                onNavigateToSettings = { navController.navigate("settings") }
+                                onNavigateToSettings = {
+                                    navController.navigate("settings")
+                                }
                             )
                         }
+
+                        // Pantalla de Configuración
                         composable("settings") {
-                            SettingsScreen(onNavigateBack = { navController.popBackStack() })
+                            SettingsScreen(
+                                viewModel = viewModel,
+                                onNavigateBack = {
+                                    navController.popBackStack()
+                                }
+                            )
                         }
                     }
                 }
