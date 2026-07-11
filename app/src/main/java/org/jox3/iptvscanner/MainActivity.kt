@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import org.jox3.iptvscanner.ui.screens.LoginScreen
 import org.jox3.iptvscanner.ui.screens.MainScreen
 import org.jox3.iptvscanner.ui.screens.SettingsScreen
 import org.jox3.iptvscanner.ui.theme.IPTVScannerTheme
@@ -29,7 +30,17 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
 
-                    NavHost(navController = navController, startDestination = "main") {
+                    NavHost(navController = navController, startDestination = "login") {
+                        composable("login") {
+                            LoginScreen(
+                                viewModel = viewModel,
+                                onLoginSuccess = {
+                                    navController.navigate("main") {
+                                        popUpTo("login") { inclusive = true }
+                                    }
+                                }
+                            )
+                        }
                         composable("main") {
                             MainScreen(
                                 viewModel = viewModel,
@@ -37,9 +48,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("settings") {
-                            SettingsScreen(
-                                onNavigateBack = { navController.popBackStack() }
-                            )
+                            SettingsScreen(onNavigateBack = { navController.popBackStack() })
                         }
                     }
                 }
